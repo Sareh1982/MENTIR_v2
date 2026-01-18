@@ -627,6 +627,139 @@
             margin-bottom: 30px;
         }
 
+        /* Ranuras de jugadores habituales */
+        .saved-slots {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(255,255,255,0.5);
+            border-radius: 10px;
+        }
+
+        .saved-slots label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .slots-container {
+            display: flex;
+            gap: 8px;
+        }
+
+        .slot-btn {
+            flex: 1;
+            padding: 10px 5px;
+            font-size: 0.85em;
+            background: #e9ecef;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .slot-btn:hover {
+            border-color: #667eea;
+            background: #fff;
+        }
+
+        .slot-btn.has-data {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: transparent;
+        }
+
+        /* Modo aleatorio */
+        .random-mode-container {
+            margin: 20px 0;
+            padding: 15px;
+            background: rgba(255,255,255,0.5);
+            border-radius: 10px;
+        }
+
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .checkbox-container input {
+            margin-right: 10px;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .random-mode-hint {
+            font-size: 0.85em;
+            color: #666;
+            margin-top: 8px;
+            margin-left: 30px;
+        }
+
+        /* Pantalla de todos listos */
+        .all-ready-screen {
+            text-align: center;
+        }
+
+        .all-ready-icon {
+            font-size: 5em;
+            margin: 20px 0;
+        }
+
+        .all-ready-message {
+            font-size: 1.3em;
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        /* Info de mentirosos en modo aleatorio */
+        .impostors-info {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 20px 0;
+            font-size: 1.2em;
+        }
+
+        /* Botones guardar ranura */
+        .save-slot-container {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #ddd;
+        }
+
+        .save-slot-container label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .save-slots-btns {
+            display: flex;
+            gap: 8px;
+        }
+
+        .save-slot-btn {
+            flex: 1;
+            padding: 8px;
+            font-size: 0.8em;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .save-slot-btn:hover {
+            background: #218838;
+        }
+
         .footer-credit {
             position: fixed;
             bottom: 10px;
@@ -675,6 +808,17 @@
         <!-- Pantalla de configuración -->
         <div id="config-screen">
             <h1>MENTIR<span class="emoji-logo">🐻</span></h1>
+            
+            <!-- Ranuras de jugadores habituales -->
+            <div class="saved-slots" id="saved-slots">
+                <label>👥 Jugadores habituales:</label>
+                <div class="slots-container">
+                    <button class="slot-btn" onclick="loadSlot(1)" id="slot-1">Vacío</button>
+                    <button class="slot-btn" onclick="loadSlot(2)" id="slot-2">Vacío</button>
+                    <button class="slot-btn" onclick="loadSlot(3)" id="slot-3">Vacío</button>
+                </div>
+            </div>
+            
             <div class="input-group">
                 <label>Número de jugadores (3-15):</label>
                 <input type="number" id="num-players" min="3" max="15" value="5">
@@ -683,6 +827,17 @@
                 <label>Número de mentirosos:</label>
                 <input type="number" id="num-impostors" min="1" max="5" value="1">
             </div>
+            
+            <!-- Modo aleatorio -->
+            <div class="random-mode-container">
+                <label class="checkbox-container">
+                    <input type="checkbox" id="random-mode" onchange="toggleRandomMode()">
+                    <span class="checkmark"></span>
+                    🎲 Modo aleatorio total
+                </label>
+                <p class="random-mode-hint" id="random-mode-hint">Nadie sabe cuántos mentirosos hay (puede ser 0, 1, 2... ¡o todos!)</p>
+            </div>
+            
             <button onclick="startPlayerSetup()">Siguiente →</button>
         </div>
 
@@ -709,6 +864,17 @@
         <div id="summary-screen" class="hidden">
             <h2>Resumen de Jugadores</h2>
             <div class="summary-list" id="summary-list"></div>
+            
+            <!-- Guardar en ranura -->
+            <div class="save-slot-container">
+                <label>💾 Guardar estos jugadores:</label>
+                <div class="save-slots-btns">
+                    <button class="save-slot-btn" onclick="saveToSlot(1)">Ranura 1</button>
+                    <button class="save-slot-btn" onclick="saveToSlot(2)">Ranura 2</button>
+                    <button class="save-slot-btn" onclick="saveToSlot(3)">Ranura 3</button>
+                </div>
+            </div>
+            
             <div class="button-group">
                 <button class="btn-back" onclick="backToPlayerSetup()">← Editar</button>
                 <button onclick="goToTimeSelection()">Siguiente →</button>
@@ -763,11 +929,28 @@
             </div>
         </div>
 
+        <!-- Pantalla todos listos -->
+        <div id="all-ready-screen" class="hidden">
+            <div class="all-ready-screen">
+                <h2>✅ ¡TODOS LISTOS!</h2>
+                <div class="all-ready-icon">🎮</div>
+                <div class="all-ready-message">Todos han visto su palabra secreta</div>
+                <div class="impostors-info" id="impostors-count-info"></div>
+                <button onclick="showStartAndPlay()">🚀 ¡Empezar a Jugar!</button>
+                <button onclick="backToRevealFromReady()" class="btn-secondary" style="margin-top: 10px;">
+                    ← Volver atrás
+                </button>
+            </div>
+        </div>
+
         <!-- Pantalla de timer -->
         <div id="timer-screen" class="hidden">
             <h2>🔍 ¡A CAZAR!</h2>
             <div class="timer" id="timer">5:00</div>
             <button onclick="endGame()">Terminar Partida</button>
+            <button onclick="backFromTimer()" class="btn-secondary" style="margin-top: 10px;">
+                ← Editar Jugadores
+            </button>
         </div>
 
         <!-- Pantalla de fin -->
@@ -1020,12 +1203,14 @@
             // NUEVAS variables
             lastImpostorIndices: [],      // Memoria de últimos mentirosos
             startingPlayerIndex: 0,        // Quién empieza la ronda
-            roundNumber: 1                 // Número de ronda
+            roundNumber: 1,                // Número de ronda
+            randomMode: false              // Modo aleatorio total
         };
 
         // Verificar si hay partida guardada al cargar
         window.onload = function() {
             checkSavedGame();
+            loadSlotsDisplay();
         };
 
         function checkSavedGame() {
@@ -1040,6 +1225,74 @@
                 }
             }
             localStorage.removeItem('mentirosoGame');
+        }
+
+        // === FUNCIONES PARA RANURAS DE JUGADORES ===
+        function loadSlotsDisplay() {
+            for (let i = 1; i <= 3; i++) {
+                const slot = localStorage.getItem(`mentiroso_slot_${i}`);
+                const btn = document.getElementById(`slot-${i}`);
+                if (slot) {
+                    const data = JSON.parse(slot);
+                    btn.textContent = `${data.players.length} jugadores`;
+                    btn.classList.add('has-data');
+                    btn.title = data.players.map(p => p.name).join(', ');
+                } else {
+                    btn.textContent = 'Vacío';
+                    btn.classList.remove('has-data');
+                }
+            }
+        }
+
+        function loadSlot(slotNum) {
+            const slot = localStorage.getItem(`mentiroso_slot_${slotNum}`);
+            if (!slot) {
+                alert('Esta ranura está vacía');
+                return;
+            }
+            
+            const data = JSON.parse(slot);
+            if (confirm(`¿Cargar ${data.players.length} jugadores?\n${data.players.map(p => p.name).join(', ')}`)) {
+                gameState.players = data.players;
+                gameState.numPlayers = data.players.length;
+                gameState.selectedAvatars = data.players.map(p => p.avatarIndex);
+                gameState.currentSetupIndex = data.players.length;
+                
+                document.getElementById('num-players').value = data.players.length;
+                
+                hide('config-screen');
+                show('summary-screen');
+                showSummary();
+            }
+        }
+
+        function saveToSlot(slotNum) {
+            const data = {
+                players: gameState.players,
+                savedAt: Date.now()
+            };
+            localStorage.setItem(`mentiroso_slot_${slotNum}`, JSON.stringify(data));
+            alert(`✅ Guardado en ranura ${slotNum}`);
+            loadSlotsDisplay();
+        }
+
+        // === FUNCIONES PARA MODO ALEATORIO ===
+        function toggleRandomMode() {
+            const checkbox = document.getElementById('random-mode');
+            const impostorsInput = document.getElementById('num-impostors');
+            const hint = document.getElementById('random-mode-hint');
+            
+            if (checkbox.checked) {
+                impostorsInput.disabled = true;
+                impostorsInput.style.opacity = '0.5';
+                hint.style.display = 'block';
+                gameState.randomMode = true;
+            } else {
+                impostorsInput.disabled = false;
+                impostorsInput.style.opacity = '1';
+                hint.style.display = 'block';
+                gameState.randomMode = false;
+            }
         }
 
         function continueGame() {
@@ -1304,24 +1557,29 @@
         function selectImpostorsAvoidingRepeat() {
             const indices = Array.from({length: gameState.numPlayers}, (_, i) => i);
             
+            // Determinar cuántos mentirosos
+            let numImpostors;
+            if (gameState.randomMode) {
+                // Modo aleatorio: puede ser de 0 a todos los jugadores
+                numImpostors = Math.floor(Math.random() * (gameState.numPlayers + 1));
+            } else {
+                numImpostors = gameState.numImpostors;
+            }
+            
             // Filtrar los que fueron mentirosos la última vez (si hay suficientes opciones)
             let availableIndices = indices.filter(i => !gameState.lastImpostorIndices.includes(i));
             
             // Si no hay suficientes disponibles, usar todos
-            if (availableIndices.length < gameState.numImpostors) {
+            if (availableIndices.length < numImpostors) {
                 availableIndices = [...indices];
             }
             
             gameState.impostorIndices = [];
-            for (let i = 0; i < gameState.numImpostors; i++) {
+            for (let i = 0; i < numImpostors; i++) {
+                if (availableIndices.length === 0) break;
                 const randomIndex = Math.floor(Math.random() * availableIndices.length);
                 gameState.impostorIndices.push(availableIndices[randomIndex]);
                 availableIndices.splice(randomIndex, 1);
-                
-                // Si se acabaron los disponibles, usar el resto
-                if (availableIndices.length === 0 && i < gameState.numImpostors - 1) {
-                    availableIndices = indices.filter(idx => !gameState.impostorIndices.includes(idx));
-                }
             }
             
             // Guardar estos como los últimos mentirosos
@@ -1340,8 +1598,8 @@
         // NUEVA función: ir a revelación desde pantalla de inicio
         function goToReveal() {
             hide('start-player-screen');
-            show('reveal-screen');
-            showCurrentReveal();
+            show('timer-screen');
+            startTimer();
         }
 
         function showCurrentReveal() {
@@ -1362,7 +1620,7 @@
             const wordDisplay = document.getElementById('word-display');
             
             if (isImpostor) {
-                wordDisplay.textContent = 'MIENTE';
+                wordDisplay.textContent = 'TÚ MIENTES';
             } else {
                 wordDisplay.textContent = gameState.word;
             }
@@ -1379,10 +1637,58 @@
             if (gameState.currentRevealIndex < gameState.players.length) {
                 showCurrentReveal();
             } else {
+                // Todos han visto su palabra -> pantalla "Todos listos"
                 hide('reveal-screen');
-                show('timer-screen');
-                startTimer();
+                showAllReadyScreen();
             }
+        }
+
+        // Pantalla todos listos
+        function showAllReadyScreen() {
+            // Mostrar info de mentirosos
+            const infoDiv = document.getElementById('impostors-count-info');
+            if (gameState.randomMode) {
+                infoDiv.textContent = '🎲 Modo aleatorio: ¡Descubre cuántos mentirosos hay!';
+            } else {
+                const num = gameState.impostorIndices.length;
+                infoDiv.textContent = `En esta ronda hay ${num} mentiroso${num > 1 ? 's' : ''}`;
+            }
+            show('all-ready-screen');
+        }
+
+        // Ir a pantalla de quién empieza y luego al timer
+        function showStartAndPlay() {
+            hide('all-ready-screen');
+            show('start-player-screen');
+            const startingPlayer = gameState.players[gameState.startingPlayerIndex];
+            document.getElementById('start-player-avatar').textContent = startingPlayer.avatar;
+            document.getElementById('start-player-name').textContent = startingPlayer.name;
+        }
+
+        // Volver desde pantalla todos listos
+        function backToRevealFromReady() {
+            hide('all-ready-screen');
+            gameState.currentRevealIndex = gameState.players.length - 1;
+            show('reveal-screen');
+            showCurrentReveal();
+        }
+
+        // Volver desde timer para editar jugadores
+        function backFromTimer() {
+            if (confirm('¿Quieres pausar y editar los jugadores?')) {
+                if (gameState.timerInterval) {
+                    clearInterval(gameState.timerInterval);
+                }
+                hide('timer-screen');
+                editPlayersFromTimer();
+            }
+        }
+
+        // Editar jugadores desde timer
+        function editPlayersFromTimer() {
+            tempEditedPlayers = JSON.parse(JSON.stringify(gameState.players));
+            show('edit-players-screen');
+            renderEditPlayersList();
         }
 
         function startTimer() {
