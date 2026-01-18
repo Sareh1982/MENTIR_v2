@@ -643,30 +643,101 @@
         }
 
         .slots-container {
-            display: flex;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
             gap: 8px;
         }
 
         .slot-btn {
-            flex: 1;
-            padding: 10px 5px;
-            font-size: 0.85em;
-            background: #e9ecef;
-            border: 2px solid #ddd;
-            border-radius: 8px;
+            padding: 12px 8px;
+            font-size: 0.8em;
+            background: #ccc;
+            border: 2px solid #bbb;
+            border-radius: 10px;
             cursor: pointer;
             transition: all 0.3s;
+            color: #666;
+            font-weight: 500;
+            min-height: 45px;
         }
 
-        .slot-btn:hover {
-            border-color: #667eea;
-            background: #fff;
+        .slot-btn:active {
+            transform: scale(0.95);
         }
 
-        .slot-btn.has-data {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border-color: transparent;
+        /* Ranuras vacías = gris */
+        .slot-btn:not(.has-data) {
+            background: #ddd;
+            color: #888;
+            border: 2px dashed #bbb;
+        }
+
+        /* Ranuras con datos = colores */
+        .slot-btn.has-data.slot-color-1 { 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+            color: white; border: none; text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        }
+        .slot-btn.has-data.slot-color-2 { 
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); 
+            color: white; border: none; text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        }
+        .slot-btn.has-data.slot-color-3 { 
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); 
+            color: white; border: none; text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        }
+        .slot-btn.has-data.slot-color-4 { 
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); 
+            color: #333; border: none;
+        }
+        .slot-btn.has-data.slot-color-5 { 
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); 
+            color: #333; border: none;
+        }
+        .slot-btn.has-data.slot-color-6 { 
+            background: linear-gradient(135deg, #ff9a56 0%, #ff6b6b 100%); 
+            color: white; border: none; text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        }
+
+        .slot-btn.selected {
+            box-shadow: 0 0 0 3px #333;
+            transform: scale(1.03);
+        }
+
+        .slots-hint {
+            font-size: 0.7em;
+            color: #888;
+            margin-top: 8px;
+            text-align: center;
+            font-style: italic;
+        }
+
+        /* Input deshabilitado cuando se carga ranura */
+        .input-group.disabled {
+            opacity: 0.4;
+            pointer-events: none;
+        }
+
+        .input-group.disabled input {
+            background: #eee;
+        }
+
+        /* Botón quitar selección ranura */
+        .btn-clear-slot {
+            width: 100%;
+            padding: 10px;
+            margin-top: 8px;
+            background: #ffc107;
+            color: #333;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.85em;
+            cursor: pointer;
+            font-weight: 500;
+            display: none;
+        }
+
+        .btn-clear-slot.visible {
+            display: block;
         }
 
         /* Modo aleatorio */
@@ -726,7 +797,7 @@
             font-size: 1.2em;
         }
 
-        /* Botones guardar ranura */
+        /* Botones guardar ranura en resumen */
         .save-slot-container {
             margin-top: 15px;
             padding-top: 15px;
@@ -741,12 +812,12 @@
         }
 
         .save-slots-btns {
-            display: flex;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
             gap: 8px;
         }
 
         .save-slot-btn {
-            flex: 1;
             padding: 8px;
             font-size: 0.8em;
             background: #28a745;
@@ -757,7 +828,95 @@
         }
 
         .save-slot-btn:hover {
-            background: #218838;
+            opacity: 0.9;
+        }
+
+        /* Modal para editar/borrar ranuras */
+        .slot-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        .slot-modal.hidden {
+            display: none;
+        }
+
+        .slot-modal-content {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            max-width: 320px;
+            width: 90%;
+            text-align: center;
+        }
+
+        .slot-modal-content h3 {
+            margin-bottom: 15px;
+            color: #764ba2;
+        }
+
+        .slot-modal-content input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+        }
+
+        .slot-modal-content input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .slot-modal-players {
+            font-size: 0.85em;
+            color: #666;
+            margin-bottom: 15px;
+            text-align: left;
+            background: #f5f5f5;
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .slot-modal-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .slot-modal-buttons button {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 0.95em;
+        }
+
+        .slot-modal-buttons .btn-save {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .slot-modal-buttons .btn-delete {
+            background: #dc3545;
+            color: white;
+        }
+
+        .slot-modal-buttons .btn-cancel {
+            background: #6c757d;
+            color: white;
         }
 
         .footer-credit {
@@ -813,17 +972,22 @@
             <div class="saved-slots" id="saved-slots">
                 <label>👥 Jugadores habituales:</label>
                 <div class="slots-container">
-                    <button class="slot-btn" onclick="loadSlot(1)" id="slot-1">Vacío</button>
-                    <button class="slot-btn" onclick="loadSlot(2)" id="slot-2">Vacío</button>
-                    <button class="slot-btn" onclick="loadSlot(3)" id="slot-3">Vacío</button>
+                    <button class="slot-btn slot-color-1" onclick="loadSlot(1)" id="slot-1">Vacío</button>
+                    <button class="slot-btn slot-color-2" onclick="loadSlot(2)" id="slot-2">Vacío</button>
+                    <button class="slot-btn slot-color-3" onclick="loadSlot(3)" id="slot-3">Vacío</button>
+                    <button class="slot-btn slot-color-4" onclick="loadSlot(4)" id="slot-4">Vacío</button>
+                    <button class="slot-btn slot-color-5" onclick="loadSlot(5)" id="slot-5">Vacío</button>
+                    <button class="slot-btn slot-color-6" onclick="loadSlot(6)" id="slot-6">Vacío</button>
                 </div>
+                <p class="slots-hint">Mantén pulsado para editar o borrar</p>
+                <button class="btn-clear-slot" id="btn-clear-slot" onclick="clearSlotSelection()">✖ Deseleccionar y configurar manual</button>
             </div>
             
-            <div class="input-group">
+            <div class="input-group" id="input-group-players">
                 <label>Número de jugadores (3-15):</label>
                 <input type="number" id="num-players" min="3" max="15" value="5">
             </div>
-            <div class="input-group">
+            <div class="input-group" id="input-group-impostors">
                 <label>Número de mentirosos:</label>
                 <input type="number" id="num-impostors" min="1" max="5" value="1">
             </div>
@@ -872,6 +1036,9 @@
                     <button class="save-slot-btn" onclick="saveToSlot(1)">Ranura 1</button>
                     <button class="save-slot-btn" onclick="saveToSlot(2)">Ranura 2</button>
                     <button class="save-slot-btn" onclick="saveToSlot(3)">Ranura 3</button>
+                    <button class="save-slot-btn" onclick="saveToSlot(4)">Ranura 4</button>
+                    <button class="save-slot-btn" onclick="saveToSlot(5)">Ranura 5</button>
+                    <button class="save-slot-btn" onclick="saveToSlot(6)">Ranura 6</button>
                 </div>
             </div>
             
@@ -981,6 +1148,20 @@
             <div class="button-group">
                 <button class="btn-back" onclick="cancelEdit()">← Cancelar</button>
                 <button onclick="saveEditedPlayers()">Guardar y Jugar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para editar/borrar ranura -->
+    <div id="slot-modal" class="slot-modal hidden">
+        <div class="slot-modal-content">
+            <h3 id="slot-modal-title">Editar ranura</h3>
+            <div id="slot-modal-players" class="slot-modal-players"></div>
+            <input type="text" id="slot-name-input" placeholder="Nombre (ej: Casa mamá)">
+            <div class="slot-modal-buttons">
+                <button class="btn-save" onclick="saveSlotName()">💾 Guardar nombre</button>
+                <button class="btn-delete" onclick="deleteSlot()">🗑️ Borrar ranura</button>
+                <button class="btn-cancel" onclick="closeSlotModal()">Cancelar</button>
             </div>
         </div>
     </div>
@@ -1228,71 +1409,180 @@
         }
 
         // === FUNCIONES PARA RANURAS DE JUGADORES ===
+        let selectedSlot = null;
+        let longPressTimer = null;
+        let editingSlotNum = null;
+
         function loadSlotsDisplay() {
-            for (let i = 1; i <= 3; i++) {
+            for (let i = 1; i <= 6; i++) {
                 const slot = localStorage.getItem(`mentiroso_slot_${i}`);
                 const btn = document.getElementById(`slot-${i}`);
+                
+                // Limpiar clases de color y datos
+                btn.classList.remove('has-data', 'selected');
+                
                 if (slot) {
                     const data = JSON.parse(slot);
-                    btn.textContent = `${data.players.length} jugadores`;
-                    btn.classList.add('has-data');
+                    const name = data.name || `${data.players.length} jugadores`;
+                    btn.textContent = name;
+                    btn.classList.add('has-data', `slot-color-${i}`);
                     btn.title = data.players.map(p => p.name).join(', ');
+                    
+                    // Añadir long press para editar
+                    btn.ontouchstart = () => startLongPress(i);
+                    btn.ontouchend = endLongPress;
+                    btn.oncontextmenu = (e) => { editSlot(i); e.preventDefault(); return false; };
                 } else {
                     btn.textContent = 'Vacío';
-                    btn.classList.remove('has-data');
+                    btn.title = '';
+                    btn.ontouchstart = null;
+                    btn.ontouchend = null;
+                    btn.oncontextmenu = null;
                 }
             }
         }
 
+        function startLongPress(slotNum) {
+            longPressTimer = setTimeout(() => {
+                editSlot(slotNum);
+            }, 600);
+        }
+
+        function endLongPress() {
+            if (longPressTimer) {
+                clearTimeout(longPressTimer);
+                longPressTimer = null;
+            }
+        }
+
         function loadSlot(slotNum) {
+            // Si hay long press activo, no cargar
+            if (longPressTimer) {
+                clearTimeout(longPressTimer);
+                longPressTimer = null;
+            }
+            
             const slot = localStorage.getItem(`mentiroso_slot_${slotNum}`);
             if (!slot) {
-                alert('Esta ranura está vacía');
-                return;
+                return; // Ranura vacía, no hacer nada
             }
             
             const data = JSON.parse(slot);
-            if (confirm(`¿Cargar ${data.players.length} jugadores?\n${data.players.map(p => p.name).join(', ')}`)) {
-                gameState.players = data.players;
-                gameState.numPlayers = data.players.length;
-                gameState.selectedAvatars = data.players.map(p => p.avatarIndex);
-                gameState.currentSetupIndex = data.players.length;
-                
-                document.getElementById('num-players').value = data.players.length;
-                
-                hide('config-screen');
-                show('summary-screen');
-                showSummary();
+            
+            // Cargar jugadores
+            gameState.players = data.players;
+            gameState.numPlayers = data.players.length;
+            gameState.selectedAvatars = data.players.map(p => p.avatarIndex);
+            gameState.currentSetupIndex = data.players.length;
+            selectedSlot = slotNum;
+            
+            // Actualizar display
+            document.getElementById('num-players').value = data.players.length;
+            
+            // Marcar slot como seleccionado
+            document.querySelectorAll('.slot-btn').forEach(btn => btn.classList.remove('selected'));
+            document.getElementById(`slot-${slotNum}`).classList.add('selected');
+            
+            // Bloquear inputs
+            document.getElementById('input-group-players').classList.add('disabled');
+            updateImpostorsInputState();
+            
+            // Mostrar botón de deseleccionar
+            document.getElementById('btn-clear-slot').classList.add('visible');
+        }
+
+        function clearSlotSelection() {
+            selectedSlot = null;
+            gameState.players = [];
+            gameState.selectedAvatars = [];
+            gameState.currentSetupIndex = 0;
+            
+            // Quitar selección visual
+            document.querySelectorAll('.slot-btn').forEach(btn => btn.classList.remove('selected'));
+            
+            // Desbloquear inputs
+            document.getElementById('input-group-players').classList.remove('disabled');
+            updateImpostorsInputState();
+            
+            // Ocultar botón deseleccionar
+            document.getElementById('btn-clear-slot').classList.remove('visible');
+        }
+
+        function updateImpostorsInputState() {
+            const impostorsGroup = document.getElementById('input-group-impostors');
+            const randomMode = document.getElementById('random-mode').checked;
+            
+            if (randomMode) {
+                impostorsGroup.classList.add('disabled');
+            } else {
+                impostorsGroup.classList.remove('disabled');
             }
         }
 
         function saveToSlot(slotNum) {
+            const name = prompt('Nombre para esta ranura (ej: Casa mamá):');
+            if (name === null) return; // Canceló
+            
             const data = {
+                name: name || `${gameState.players.length} jugadores`,
                 players: gameState.players,
                 savedAt: Date.now()
             };
             localStorage.setItem(`mentiroso_slot_${slotNum}`, JSON.stringify(data));
-            alert(`✅ Guardado en ranura ${slotNum}`);
+            alert(`✅ Guardado: ${data.name}`);
             loadSlotsDisplay();
+        }
+
+        function editSlot(slotNum) {
+            const slot = localStorage.getItem(`mentiroso_slot_${slotNum}`);
+            if (!slot) return;
+            
+            const data = JSON.parse(slot);
+            editingSlotNum = slotNum;
+            
+            document.getElementById('slot-modal-title').textContent = `Editar ranura ${slotNum}`;
+            document.getElementById('slot-modal-players').textContent = 
+                `Jugadores: ${data.players.map(p => p.name).join(', ')}`;
+            document.getElementById('slot-name-input').value = data.name || '';
+            
+            document.getElementById('slot-modal').classList.remove('hidden');
+        }
+
+        function saveSlotName() {
+            const newName = document.getElementById('slot-name-input').value.trim();
+            const slot = localStorage.getItem(`mentiroso_slot_${editingSlotNum}`);
+            if (slot) {
+                const data = JSON.parse(slot);
+                data.name = newName || `${data.players.length} jugadores`;
+                localStorage.setItem(`mentiroso_slot_${editingSlotNum}`, JSON.stringify(data));
+            }
+            closeSlotModal();
+            loadSlotsDisplay();
+        }
+
+        function deleteSlot() {
+            if (confirm('¿Borrar esta ranura?')) {
+                localStorage.removeItem(`mentiroso_slot_${editingSlotNum}`);
+                closeSlotModal();
+                loadSlotsDisplay();
+                
+                // Si era la seleccionada, limpiar selección
+                if (selectedSlot === editingSlotNum) {
+                    clearSlotSelection();
+                }
+            }
+        }
+
+        function closeSlotModal() {
+            document.getElementById('slot-modal').classList.add('hidden');
+            editingSlotNum = null;
         }
 
         // === FUNCIONES PARA MODO ALEATORIO ===
         function toggleRandomMode() {
             const checkbox = document.getElementById('random-mode');
-            const impostorsInput = document.getElementById('num-impostors');
-            const hint = document.getElementById('random-mode-hint');
-            
-            if (checkbox.checked) {
-                impostorsInput.disabled = true;
-                impostorsInput.style.opacity = '0.5';
-                hint.style.display = 'block';
-                gameState.randomMode = true;
-            } else {
-                impostorsInput.disabled = false;
-                impostorsInput.style.opacity = '1';
-                hint.style.display = 'block';
-                gameState.randomMode = false;
-            }
+            gameState.randomMode = checkbox.checked;
+            updateImpostorsInputState();
         }
 
         function continueGame() {
@@ -1338,8 +1628,18 @@
                 numImpostors = 1;
             }
 
-            gameState.numPlayers = numPlayers;
             gameState.numImpostors = numImpostors;
+
+            // Si hay ranura seleccionada, ir directo al resumen
+            if (selectedSlot && gameState.players.length > 0) {
+                hide('config-screen');
+                show('summary-screen');
+                showSummary();
+                return;
+            }
+
+            // Si no hay ranura, configurar jugadores manualmente
+            gameState.numPlayers = numPlayers;
             gameState.players = [];
             gameState.currentSetupIndex = 0;
             gameState.selectedAvatars = [];
@@ -1547,10 +1847,11 @@
             gameState.currentRevealIndex = 0;
             saveGame();
 
-            // Mostrar pantalla de quién empieza
+            // Ir a ver las palabras (revelación)
             hide('time-selection-screen');
             hide('impostor-reveal-screen');
-            showStartPlayerScreen();
+            show('reveal-screen');
+            showCurrentReveal();
         }
 
         // NUEVA función: seleccionar mentirosos evitando repetir
